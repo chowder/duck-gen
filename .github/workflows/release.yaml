@@ -28,3 +28,4 @@ jobs:
           ldflags: -s -w
           md5sum: FALSE
           overwrite: TRUE
+          compress_assets: OFF
