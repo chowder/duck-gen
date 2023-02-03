@@ -43,6 +43,10 @@ func getToken() (string, error) {
 	}
 	username = strings.TrimSpace(username)
 
+	if strings.HasSuffix(username, "@duck.com") {
+		username = strings.TrimSuffix(username, "@duck.com")
+	}
+
 	err := duck.GetLoginLink(username)
 	if err != nil {
 		return "", fmt.Errorf("could not trigger OTP login link: %w", err)
