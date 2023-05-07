@@ -1,6 +1,6 @@
 # `duck-gen`
 
-Generate **Duck Private Addresses** from the command-line.
+Generate [**Duckduckgo Email Protection**](https://spreadprivacy.com/protect-your-inbox-with-duckduckgo-email-protection/) addresses from the command-line.
 
 ![carbon](https://user-images.githubusercontent.com/16789070/193912937-4e73a05c-de41-45ad-901c-96bd5e54f92d.png)
 
