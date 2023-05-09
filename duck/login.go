@@ -1,12 +1,8 @@
 package duck
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
 )
 
 const (
@@ -29,67 +25,56 @@ type DashboardResponse struct {
 
 // GetLoginLink sends the OTP link/passphrase to the user's email
 func GetLoginLink(user string) error {
-	params := url.Values{"user": {user}}
+	client := GetClient()
 
-	resp, err := http.Get(loginLinkUrl + "?" + params.Encode())
+	r, err := client.R().
+		SetQueryParam("user", user).
+		Get(loginLinkUrl)
+
 	if err != nil {
 		return fmt.Errorf("getLoginLink failed: %w", err)
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		return errors.New("getLoginLink returned " + resp.Status)
+	if r.StatusCode() != 200 {
+		return errors.New("getLoginLink returned " + r.Status())
 	}
 
 	return nil
 }
 
-// GetLogin takes the passphrase from `getLoginLink`, and retrieves an one-time login token
-func GetLogin(user string, passphrase string) (LoginResponse, error) {
-	params := url.Values{
-		"user": {user},
-		"otp":  {passphrase},
-	}
-	httpResp, err := http.Get(loginUrl + "?" + params.Encode())
+// GetLogin takes the passphrase from `getLoginLink`, and retrieves a one-time login token
+func GetLogin(user string, passphrase string) (response LoginResponse, err error) {
+	client := GetClient()
+
+	r, err := client.R().
+		SetQueryParam("user", user).
+		SetQueryParam("otp", passphrase).
+		SetResult(&response).
+		Get(loginUrl)
+
 	if err != nil {
-		return LoginResponse{}, fmt.Errorf("getLogin failed: %w", err)
-	}
-	defer httpResp.Body.Close()
-
-	if httpResp.StatusCode != 200 {
-		return LoginResponse{}, errors.New("getLogin returned " + httpResp.Status)
+		return response, fmt.Errorf("getLogin failed: %w", err)
 	}
 
-	body, _ := io.ReadAll(httpResp.Body)
-
-	resp := LoginResponse{}
-	err = json.Unmarshal(body, &resp)
-	if err != nil {
-		return resp, fmt.Errorf("getLogin could not unmarshal response: %s, error: %w", body, err)
+	if r.StatusCode() != 200 {
+		return response, errors.New("getLogin returned " + r.Status())
 	}
-	return resp, nil
+
+	return response, nil
 }
 
 // GetDashboard uses the one-time token from `getLogin` to retrieve a long-lasting access token
-func GetDashboard(otpToken string) (DashboardResponse, error) {
-	req, _ := http.NewRequest(http.MethodGet, dashboardUrl, nil)
-	req.Header.Add("authorization", "Bearer "+otpToken)
+func GetDashboard(otpToken string) (response DashboardResponse, err error) {
+	client := GetClient()
 
-	httpResp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return DashboardResponse{}, err
-	}
-	defer httpResp.Body.Close()
+	r, err := client.R().
+		SetHeader("authorization", "Bearer "+otpToken).
+		SetResult(&response).
+		Get(dashboardUrl)
 
-	if httpResp.StatusCode != 200 {
-		return DashboardResponse{}, errors.New("getDashboard returned " + httpResp.Status)
+	if r.StatusCode() != 200 {
+		return response, errors.New("getDashboard returned " + r.Status())
 	}
 
-	body, _ := io.ReadAll(httpResp.Body)
-	resp := DashboardResponse{}
-	err = json.Unmarshal(body, &resp)
-	if err != nil {
-		return resp, fmt.Errorf("getDashboard failed to unrmashal response: %s, error: %w", body, err)
-	}
-	return resp, nil
+	return response, nil
 }

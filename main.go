@@ -100,6 +100,5 @@ func saveToken(token string) error {
 		return err
 	}
 
-	err = os.WriteFile(tokenFile, []byte(token), 0600)
-	return err
+	return os.WriteFile(tokenFile, []byte(token), 0600)
 }
