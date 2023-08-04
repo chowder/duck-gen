@@ -38,15 +38,10 @@ func getToken() (string, error) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	fmt.Print("Enter your Duck Address: ")
-	var username string
-	if scanner.Scan() {
-		username = scanner.Text()
+	if !scanner.Scan() {
+		return "", fmt.Errorf("could not get duck address")
 	}
-	username = strings.TrimSpace(username)
-
-	if strings.HasSuffix(username, "@duck.com") {
-		username = strings.TrimSuffix(username, "@duck.com")
-	}
+	username := strings.TrimSuffix(strings.TrimSpace(scanner.Text()), "@duck.com")
 
 	err := duck.GetLoginLink(username)
 	if err != nil {
@@ -54,11 +49,10 @@ func getToken() (string, error) {
 	}
 
 	fmt.Print("Enter the one-time passphrase sent to your email: ")
-	var otp string
-	if scanner.Scan() {
-		otp = scanner.Text()
+	if !scanner.Scan() {
+		return "", fmt.Errorf("could not get one-time passphrase")
 	}
-	otp = strings.TrimSpace(otp)
+	otp := strings.TrimSpace(scanner.Text())
 
 	loginResponse, err := duck.GetLogin(username, otp)
 	if err != nil {
