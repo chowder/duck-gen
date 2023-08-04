@@ -1,4 +1,4 @@
-module duck-gen
+module github.com/chowder/duck-gen
 
 go 1.19
 

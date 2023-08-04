@@ -2,11 +2,12 @@ package main
 
 import (
 	"bufio"
-	"duck-gen/duck"
 	"fmt"
 	"os"
 	"path"
 	"strings"
+
+	"github.com/chowder/duck-gen/duck"
 )
 
 func main() {
