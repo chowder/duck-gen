@@ -26,6 +26,6 @@ jobs:
           project_path: "."
           binary_name: "duck-gen"
           ldflags: -s -w
-          md5sum: FALSE
+          md5sum: TRUE
           overwrite: TRUE
           compress_assets: OFF
