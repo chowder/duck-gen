@@ -17,14 +17,16 @@ jobs:
             goos: windows
     steps:
       - uses: actions/checkout@v3
-      - uses: wangyoucao577/go-release-action@v1.30
+      - uses: wangyoucao577/go-release-action@v1.40
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          goversion: "https://go.dev/dl/go1.19.linux-amd64.tar.gz"
+          goversion: "https://go.dev/dl/go1.21.3.linux-amd64.tar.gz"
           project_path: "."
           binary_name: "duck-gen"
+          pre_command: "export CGO_ENABLED=0"
+          build_flags: "-trimpath"
           ldflags: -s -w
           md5sum: TRUE
           overwrite: TRUE
