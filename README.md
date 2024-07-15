@@ -9,7 +9,7 @@ Enter the one-time passphrase sent to your email: heftiness slate captivate corn
 bzpkash3@duck.com
 
 foo@bar:~$ duck-gen
-b2lo513ds@duck.com 
+embargo-frisk-rack@duck.com
 ```
 
 `duck-gen` will initiate a login flow the first time you run it, but will save your authentication tokens at `~/.duck_token` for future runs. 
