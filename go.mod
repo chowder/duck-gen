@@ -1,7 +1,7 @@
 module github.com/chowder/duck-gen
 
-go 1.23.2
+go 1.25.0
 
 require github.com/go-resty/resty/v2 v2.16.2
 
-require golang.org/x/net v0.38.0 // indirect
+require golang.org/x/net v0.55.0 // indirect
